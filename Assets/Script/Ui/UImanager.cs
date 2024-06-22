@@ -60,8 +60,8 @@ public class UImanager : MonoBehaviour
 	private int newHighscore = -1;
 	private char letter = (char)65;
 	public static bool selectkey;
-	private int whichHighScore = 0;
 	public List<Highscore> highscores;
+
 	[Header("Registry")]
 	public bool isInRegistry = false;
 	public GameObject registry;
@@ -522,7 +522,7 @@ public class UImanager : MonoBehaviour
 				Playermuving.player.StartCoroutine (Playermuving.player.playagain (0));
 				if (Manageritem.box == false) {
 					if (Playermuving.isplay == false) {
-						if (checkedIfNewScore() != 0) {
+						if (checkedIfNewScore()) {
 							newHighscore = 0;
 						} else {
 							newHighscore = -1;
@@ -702,42 +702,13 @@ public class UImanager : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
 	{
-		if (Input.GetKeyDown (KeyCode.P)) {
-			isInRegistry = !isInRegistry;
-			getRegistry();
-		}
-
-		registry.SetActive (isInRegistry);
-
-		if (selectCharacter == 0) {
-			characterSelect.SetActive (false);
-			characterSelectArrow.SetActive (false);
-		}
-		else if (selectCharacter > 0 && selectingCharacter){
-			Playermuving.player.gameObject.SetActive (false);
-			camerafolow.transform.position = new Vector3(-2.62f, 4.5f, -8.2f);
-			camerafolow.transform.localRotation = Quaternion.Euler(0f, 70f, 0f);
-			characterSelect.SetActive(true);
-			characterSelectArrow.SetActive (true);
-		}
-
-		if (Input.GetKeyDown ("1") && credits > 0 && !Playermuving.isplay && newHighscore < 0 && !played) {
-			selectCharacter = 1;
-			selectingCharacter = true;
-			played = true;
-			credits--;
-			managerdata.manager.setCredits(credits);
-			managerdata.manager.saveRegistryOUT (1);
-			updateCreditTxt ();
-		}
-			
-		if (Input.GetKeyDown ("5") && credits < 99) {
+		if (Input.GetButtonDown("Credit") && credits < 99) {
 			credits++;
 			managerdata.manager.setCredits(credits);
 			managerdata.manager.saveRegistryIN(1);
 			updateCreditTxt ();
 		}
-			
+
 		switch (selectCharacter) {
 		case 1:
 			characterSelectArrow.transform.position = new Vector3(0.346f, 2.612f, -6.517f);
@@ -765,7 +736,7 @@ public class UImanager : MonoBehaviour
 			}
 		}
 
-		if (selectCharacter > 0 && Input.GetKeyDown ("1") && !Playermuving.isplay && newHighscore < 0) {
+		if (selectCharacter > 0 && Input.GetButtonDown("Start") && !Playermuving.isplay && newHighscore < 0) {
 			switch (selectCharacter) {
 			case 1:
 				managerdata.manager.Setnowcharacter("nvchinh");
@@ -786,6 +757,35 @@ public class UImanager : MonoBehaviour
 			camerafolow.transform.localRotation = Quaternion.Euler(0f, 0f, 0f);
 			Playermuving.player.setTranformitem();
 			play ();
+		}
+
+		if (Input.GetKeyDown (KeyCode.P)) {
+			isInRegistry = !isInRegistry;
+			getRegistry();
+		}
+
+		registry.SetActive (isInRegistry);
+
+		if (selectCharacter == 0) {
+			characterSelect.SetActive (false);
+			characterSelectArrow.SetActive (false);
+		}
+		else if (selectCharacter > 0 && selectingCharacter){
+			Playermuving.player.gameObject.SetActive (false);
+			camerafolow.transform.position = new Vector3(-2.62f, 4.5f, -8.2f);
+			camerafolow.transform.localRotation = Quaternion.Euler(0f, 70f, 0f);
+			characterSelect.SetActive(true);
+			characterSelectArrow.SetActive (true);
+		}
+
+		if (Input.GetButtonDown("Start") && credits > 0 && !Playermuving.isplay && newHighscore < 0 && !played) {
+			selectCharacter = 1;
+			selectingCharacter = true;
+			played = true;
+			credits--;
+			managerdata.manager.setCredits(credits);
+			managerdata.manager.saveRegistryOUT (1);
+			updateCreditTxt ();
 		}
 
 		if (newHighscore >= 7) {
@@ -819,11 +819,11 @@ public class UImanager : MonoBehaviour
 		}
 
 		if (newHighscore > -1 && !Playermuving.isplay) {
-			if (Input.GetKeyDown ("1")) {
+			if (Input.GetButtonDown("Start")) {
 				letter = (char)65;
 				newHighscore++;
 			}
-			if (Input.GetKeyDown (KeyCode.W)) {
+			if (Input.GetButtonDown("Up")) {
 				letter--;
 				if (letter < 65) {
 					letter = (char)95;
@@ -833,7 +833,7 @@ public class UImanager : MonoBehaviour
 				}
 				letters [newHighscore].text = letter.ToString ();
 			}
-			if (Input.GetKeyDown (KeyCode.S)) {
+			if (Input.GetButtonDown("Down")) {
 				letter++;
 				if (letter == 91) {
 					letter = (char)95;
@@ -908,13 +908,12 @@ public class UImanager : MonoBehaviour
 		gotohome();
 	}
 
-	private int checkedIfNewScore(){
+	private bool checkedIfNewScore(){
 		for (int i = 1; i < 7; i++) {
 			if (coinmuving + (coin * 10) > managerdata.manager.getHighscoreScore (i)) {
-				whichHighScore = i;
-				return i;
+				return true;
 			}
 		}
-		return 0;
+		return false;
 	}
 }

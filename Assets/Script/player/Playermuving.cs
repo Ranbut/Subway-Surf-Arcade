@@ -1232,22 +1232,22 @@ public void Getscore(float value)
     // input PC
     private void checkInput()
     {
-        if (Input.GetKeyDown(KeyCode.A))
+        if (Input.GetButtonDown("Right"))
         {
             StartCoroutine(Muvingright());
         }
         else
-             if (Input.GetKeyDown(KeyCode.D))
+             if (Input.GetButtonDown("Left"))
         {
             StartCoroutine(Muvingleft());
         }
         else
-             if (Input.GetKeyDown(KeyCode.S))
+             if (Input.GetButtonDown("Down"))
         {
             StartCoroutine(Muvingdow());
         }
         else
-             if (Input.GetKeyDown(KeyCode.W))
+             if (Input.GetButtonDown("Up"))
         {
             Jump();
         }
